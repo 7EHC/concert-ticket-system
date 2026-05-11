@@ -9,8 +9,8 @@ A full-stack application for concert ticket management with **Next.js**, **NestJ
 | User | Admin |
 |------|-------|
 | Browse concerts | Create concerts |
-| Reserve 1 seat/concert | Delete concerts |
-| Cancel bookings | Statistics dashboard |
+| Reserve seats | Delete concerts |
+| Cancel reservations | Statistics dashboard |
 
 **Security:** JWT authentication + Role-based access control
 
