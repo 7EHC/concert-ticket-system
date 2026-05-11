@@ -137,13 +137,6 @@ npm run test:e2e
 npm run test -- --testNamePattern="not allow booking twice"
 ```
 
-**Manual Test Scenario:**
-1. User 1 reserves concert → ✅ Success
-2. User 1 reserves same concert → ❌ "Already booked"
-3. User 2 reserves same concert → ✅ Success (different user)
-4. Create concert with 2 seats, user 3 tries → ❌ "Sold out"
-5. User 1 cancels → ✅ Booking removed, user 3 can book
-
 ---
 
 ## 🔑 Environment
