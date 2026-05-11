@@ -16,10 +16,5 @@ export class AuthController {
     return this.authService.register(body.name, body.email, body.password, body.role);
   }
 
-  @Post('refresh')
-  @HttpCode(HttpStatus.OK)
-  async refresh() {
-    // Placeholder for refresh token logic
-    return { message: 'Refresh not implemented yet' };
-  }
+
 }

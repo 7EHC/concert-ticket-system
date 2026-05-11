@@ -64,8 +64,7 @@ export const api = {
 // Concert API
 export const concertApi = {
   getAll: () => api.get('/concerts'),
-  getById: (id: string) => api.get(`/concerts/${id}`),
-  search: (query: string) => api.get(`/concerts?search=${query}`),
+
   create: (data: { name: string; description: string; totalSeats: number }) => api.post('/concerts', data),
   delete: (id: string) => api.delete(`/concerts/${id}`),
 };
@@ -74,7 +73,7 @@ export const concertApi = {
 export const authApi = {
   login: (email: string, password: string) => api.post('/auth/login', { email, password }),
   register: (name: string, email: string, password: string, role?: string) => api.post('/auth/register', { name, email, password, role }),
-  refresh: () => api.post('/auth/refresh', {}),
+
 };
 
 // Booking API

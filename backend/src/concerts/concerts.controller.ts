@@ -22,10 +22,6 @@ export class ConcertsController {
     return this.concertsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<Concert> {
-    return this.concertsService.findOne(id);
-  }
 
   @Delete(':id')
   @Roles(UserRole.ADMIN)

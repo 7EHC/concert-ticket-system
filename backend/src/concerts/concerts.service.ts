@@ -25,20 +25,6 @@ export class ConcertsService {
       .getMany();
   }
 
-  async findOne(id: string): Promise<any> {
-    const concert = await this.concertRepository
-      .createQueryBuilder('concert')
-      .loadRelationCountAndMap('concert.reservedSeats', 'concert.bookings', 'booking', (qb) =>
-        qb.where('booking.status = :status', { status: 'reserved' }),
-      )
-      .where('concert.id = :id', { id })
-      .getOne();
-
-    if (!concert) {
-      throw new NotFoundException(`Concert with ID ${id} not found`);
-    }
-    return concert;
-  }
 
   async remove(id: string): Promise<void> {
     const result = await this.concertRepository.delete(id);
