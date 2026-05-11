@@ -60,7 +60,6 @@ docker run -e POSTGRES_PASSWORD=password -e POSTGRES_DB=concert_ticket -p 5432:5
 concert-ticket-system/
 ├── backend/              # NestJS API (src/auth, concerts, bookings, users)
 ├── frontend/             # Next.js app (app/auth, user, admin pages)
-├── docs/                 # Documentation & plans
 ├── docker-compose.yml    # Docker services
 └── README.md            # This file
 ```
