@@ -31,7 +31,12 @@ export default function LoginPage() {
 
   return (
     <AuthSplitLayout>
-      <h2 style={{ fontSize: 24, fontWeight: 700, color: '#111', marginBottom: 28 }}>Login</h2>
+      <h2 style={{ fontSize: 24, fontWeight: 700, color: '#111', marginBottom: 8 }}>
+        {role === 'admin' ? 'Administrator Login' : 'User Login'}
+      </h2>
+      <p style={{ color: '#666', fontSize: 14, marginBottom: 28 }}>
+        Please enter your credentials to access the {role} portal.
+      </p>
 
       <form onSubmit={handleSubmit}>
             {/* Email */}

@@ -15,7 +15,6 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role?: string) => Promise<void>;
   logout: () => void;
-  setMockUser: (role: 'user' | 'admin') => void;
   isLoading: boolean;
 }
 
@@ -66,19 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const setMockUser = (role: 'user' | 'admin') => {
-    const mockUser: User = {
-      id: '99',
-      email: role === 'admin' ? 'admin@example.com' : 'user@example.com',
-      name: role === 'admin' ? 'Admin' : 'User',
-      role,
-    };
-    setUser(mockUser);
-    localStorage.setItem('concert_user', JSON.stringify(mockUser));
-    // No real token for mock user, but we can set a dummy one if needed
-    localStorage.setItem('token', 'mock_token');
-  };
-
   const logout = () => {
     setUser(null);
     localStorage.removeItem('concert_user');
@@ -90,7 +76,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login,
     register,
     logout,
-    setMockUser,
     isLoading
   }), [user, isLoading]);
 
