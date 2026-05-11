@@ -196,7 +196,16 @@ export default function AdminHomePage() {
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
             }}
           >
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '50%', padding: 10, marginBottom: 16 }}>
+            <div style={{ 
+              backgroundColor: 'rgba(255,255,255,0.15)', 
+              borderRadius: '50%', 
+              width: 48,
+              height: 48,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 16 
+            }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 {card.icon === 'total' && <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />}
                 {card.icon === 'reserve' && <path d="M20 6L9 17l-5-5" />}
@@ -283,7 +292,7 @@ export default function AdminHomePage() {
 
           {/* Create Tab */}
           {tab === 'create' && (
-            <div style={{ maxWidth: 600 }}>
+            <div style={{ width: '100%' }}>
               <form onSubmit={handleCreate}>
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, marginBottom: 24 }}>
                   <div>

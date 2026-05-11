@@ -13,7 +13,9 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     if (!isLoading) {
-      if (!user || user.role !== 'user') {
+      if (!user) {
+        router.push('/auth/login?role=user');
+      } else if (user.role !== 'user') {
         toast.error('Access Denied: User portal only');
         router.push('/');
       } else {
@@ -27,11 +29,36 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f0f2f5', display: 'flex' }}>
-      <Sidebar role="user" />
-      <div style={{ flex: 1, padding: '40px' }}>
-        {children}
+    <>
+      <style>{`
+        .layout-container {
+          min-height: 100vh;
+          background-color: #f9fafb;
+          display: flex;
+          flex-direction: row;
+        }
+        .main-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 40px;
+          overflow-y: auto;
+        }
+        @media (max-width: 768px) {
+          .layout-container {
+            flex-direction: column;
+          }
+          .main-content {
+            padding: 24px 16px;
+          }
+        }
+      `}</style>
+      <div className="layout-container">
+        <Sidebar role="user" />
+        <div className="main-content">
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

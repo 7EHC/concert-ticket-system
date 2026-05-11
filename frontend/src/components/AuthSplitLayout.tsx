@@ -6,17 +6,40 @@ interface AuthSplitLayoutProps {
 
 export default function AuthSplitLayout({ children }: AuthSplitLayoutProps) {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex' }}>
+    <div className="auth-layout">
+      <style>{`
+        .auth-layout {
+          min-height: 100vh;
+          display: flex;
+        }
+        .auth-left {
+          flex: 0 0 42%;
+          background-color: #1a3a5c;
+          display: flex;
+          flex-direction: column;
+          padding: 32px 40px;
+        }
+        .auth-right {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #ffffff;
+          padding: 40px 24px;
+        }
+        .auth-right-content {
+          width: 100%;
+          max-width: 360px;
+        }
+        @media (max-width: 800px) {
+          .auth-left {
+            display: none;
+          }
+        }
+      `}</style>
+      
       {/* Left blue panel */}
-      <div
-        style={{
-          flex: '0 0 42%',
-          backgroundColor: '#1a3a5c',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '32px 40px',
-        }}
-      >
+      <div className="auth-left">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 'auto' }}>
           <div
             style={{
@@ -38,28 +61,17 @@ export default function AuthSplitLayout({ children }: AuthSplitLayoutProps) {
 
         <div style={{ marginTop: 'auto', paddingBottom: 60 }}>
           <p style={{ color: '#fff', fontSize: 20, fontWeight: 700, lineHeight: 1.4, marginBottom: 16 }}>
-            &ldquo;Powering the tools that power the team.&rdquo;
+            "Your Gateway to Unforgettable Live Experiences."
           </p>
           <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, lineHeight: 1.7 }}>
-            Lorem ipsum dolor sit amet consectetur. Elit porua nam gravida portitor nibh urns sit
-            ornare a. Proin dolor morbi id ornare aenean non. Fusce dignissim turpis sed non est orci
-            sed in. Blandit ut purus nunc sed donec commodo morbi diam scelerisque.
+            Join our platform to discover exclusive concerts, secure the best seats, and manage your tickets with ease. Whether you're a passionate fan or an event organizer, our system provides the tools you need for a seamless ticketing experience.
           </p>
         </div>
       </div>
 
       {/* Right white panel */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#fff',
-          padding: '40px 56px',
-        }}
-      >
-        <div style={{ width: '100%', maxWidth: 360 }}>
+      <div className="auth-right">
+        <div className="auth-right-content">
           {children}
         </div>
       </div>

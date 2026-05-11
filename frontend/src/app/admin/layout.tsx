@@ -13,7 +13,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (!isLoading) {
-      if (!user || user.role !== 'admin') {
+      if (!user) {
+        router.push('/auth/login?role=admin');
+      } else if (user.role !== 'admin') {
         toast.error('Access Denied: Admin only');
         router.push('/');
       } else {
@@ -27,15 +29,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f0f2f5', display: 'flex' }}>
-      <Sidebar role="admin" />
-      
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {/* Main content */}
-        <div style={{ flex: 1, padding: '40px' }}>
+    <>
+      <style>{`
+        .layout-container {
+          min-height: 100vh;
+          background-color: #f9fafb;
+          display: flex;
+          flex-direction: row;
+        }
+        .main-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 40px;
+          overflow-y: auto;
+        }
+        @media (max-width: 768px) {
+          .layout-container {
+            flex-direction: column;
+          }
+          .main-content {
+            padding: 24px 16px;
+          }
+        }
+      `}</style>
+      <div className="layout-container">
+        <Sidebar role="admin" />
+        
+        <div className="main-content">
           {children}
         </div>
       </div>
-    </div>
+    </>
   );
 }
