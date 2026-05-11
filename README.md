@@ -1,77 +1,228 @@
-# Concert Ticket System
+# 🎭 Concert Ticket System
 
-A full-stack web application for managing concert tickets, built with Next.js (frontend) and NestJS (backend).
+A full-stack application for concert ticket management with **Next.js**, **NestJS**, and **PostgreSQL**.
 
-## Requirements
+---
 
-Based on the assignment specifications, this system includes the following key features:
+## ✨ Features
 
-### User Features
-- User registration and authentication (JWT-based)
-- Browse and search concerts/events
-- View concert details (venue, date, ticket types)
-- Book and purchase tickets
-- User dashboard for managing bookings
-- Payment integration (Stripe/PayPal)
-- Digital ticket generation (QR codes)
+| User | Admin |
+|------|-------|
+| Browse concerts | Create concerts |
+| Reserve 1 seat/concert | Delete concerts |
+| View booking history | View all bookings |
+| Cancel bookings | Statistics dashboard |
 
-### Admin Features
-- Admin panel for managing concerts
-- User management
-- Ticket inventory management
-- Sales analytics and reports
+**Security:** JWT authentication + Role-based access control
 
-### Technical Stack
-- **Frontend**: Next.js with TypeScript, Tailwind CSS, ESLint
-- **Backend**: NestJS with TypeScript
-- **Database**: PostgreSQL (recommended)
-- **Authentication**: JWT
-- **Payment**: Stripe integration
-- **Deployment**: Docker, Vercel/AWS
+---
 
-## Design
-View the UI/UX design on Figma: [Full-Stack Developer Design](https://www.figma.com/design/fYPlbS6c5i7tlx6buHWY5w/Full-Stack-Developer?node-id=0-1&t=E8VNeo0nAayAfbiL-1)
-
-## Project Structure
-```
-concert-ticket-system/
-├── backend/          # NestJS API server
-├── frontend/         # Next.js web application
-├── spec requirements/ # Assignment specifications
-└── README.md
-```
-
-## Getting Started
+## 🚀 Quick Start (5 minutes)
 
 ### Prerequisites
-- Node.js (v18+)
-- npm or yarn
-- PostgreSQL (for database)
+- Docker & Docker Compose (or Node.js 18+ + PostgreSQL 15+)
 
-### Backend Setup
+### Docker Setup
+```bash
+git clone <repository-url>
+cd concert-ticket-system
+cp .env.example .env
+docker-compose up --build
+```
+
+**Access:** Frontend: http://localhost:3000 | Backend: http://localhost:3001
+
+### Local Setup
+```bash
+# Backend
+cd backend && npm install && npm run start:dev
+
+# Frontend  
+cd frontend && npm install && npm run dev
+
+# Database (Docker)
+docker run -e POSTGRES_PASSWORD=password -e POSTGRES_DB=concert_ticket -p 5432:5432 -d postgres:15-alpine
+```
+
+---
+
+## 📦 Tech Stack
+
+- **Frontend:** Next.js 14, React 18, TypeScript, Tailwind CSS
+- **Backend:** NestJS 10, TypeScript, JWT
+- **Database:** PostgreSQL 15 (Docker)
+- **ORM:** TypeORM
+
+---
+
+## 📁 Project Structure
+
+```
+concert-ticket-system/
+├── backend/              # NestJS API (src/auth, concerts, bookings, users)
+├── frontend/             # Next.js app (app/auth, user, admin pages)
+├── docs/                 # Documentation & plans
+├── docker-compose.yml    # Docker services
+└── README.md            # This file
+```
+
+---
+
+## 🔌 API Endpoints
+
+```
+Auth:       POST /api/auth/login | register
+Concerts:   GET /api/concerts | POST /api/concerts (admin) | DELETE /:id (admin)
+Bookings:   GET /api/bookings | POST (reserve) | PUT /:id/cancel
+            GET /api/bookings/stats (admin) | history (admin)
+```
+
+---
+
+## 📋 Business Rules
+
+✅ **1-Seat-Per-User Constraint:** Each user reserves exactly 1 seat per concert
+```typescript
+// BookingsService enforces:
+const existing = await bookingRepository.findOne({
+  where: { userId, concertId, status: 'RESERVED' }
+});
+if (existing) throw Error('Already booked');
+```
+
+✅ **Seat Availability:** No bookings when sold out
+✅ **Admin Only:** Create/delete concerts (JWT + RolesGuard)
+
+---
+
+## 🏗️ Architecture
+
+```
+Browser → Next.js (port 3000)
+  ↓ (HTTP + JWT)
+NestJS API (port 3001)
+  ↓ (TypeORM)
+PostgreSQL (port 5432)
+```
+
+**Data Models:**
+- `users` (id, email, password, role)
+- `concerts` (id, name, totalSeats, description)
+- `bookings` (id, userId, concertId, status, createdAt)
+- `booking_actions` (id, bookingId, action, timestamp)
+
+---
+
+## 📚 Dependencies
+
+### Core Packages
+| Backend | Frontend | Purpose |
+|---------|----------|---------|
+| `@nestjs/core` | `next` | Framework |
+| `@nestjs/jwt` | `react` | JWT/UI |
+| `@nestjs/typeorm` | `tailwindcss` | Database/Styling |
+| `typeorm` `pg` | - | PostgreSQL |
+| `passport-jwt` | - | Authentication |
+
+---
+
+## 🧪 Testing
+
+```bash
+# Backend Unit Tests
+cd backend && npm run test
+
+# Backend E2E Tests
+npm run test:e2e
+
+# Test 1-Seat Constraint
+npm run test -- --testNamePattern="not allow booking twice"
+```
+
+**Manual Test Scenario:**
+1. User 1 reserves concert → ✅ Success
+2. User 1 reserves same concert → ❌ "Already booked"
+3. User 2 reserves same concert → ✅ Success (different user)
+4. Create concert with 2 seats, user 3 tries → ❌ "Sold out"
+5. User 1 cancels → ✅ Booking removed, user 3 can book
+
+---
+
+## 🔑 Environment
+
+**Docker Setup:**
+```bash
+cp .env.example .env
+# Uses: postgres (host), concert_ticket (db)
+```
+
+**Local Development:**
 ```bash
 cd backend
-npm install
-npm run start:dev
+cp .env.example .env
+# Edit .env with: localhost (host), local postgres credentials
 ```
 
-### Frontend Setup
+See `.env.example` for all variables (JWT, database, ports, etc.)
+
+---
+
+## 🐛 Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Port in use | `docker-compose down` or change port in docker-compose.yml |
+| DB connection error | `docker-compose logs postgres` or check .env |
+| Module errors | `npm cache clean --force && rm -rf node_modules && npm install` |
+| JWT failing | Verify JWT_SECRET in .env is set |
+
+---
+
+## 📖 Common Commands
+
 ```bash
-cd frontend
-npm install
-npm run dev
+# Docker
+docker-compose up --build          # Start
+docker-compose logs backend        # View logs
+docker-compose down -v             # Stop + remove data
+
+# Backend
+npm run start:dev                  # Dev server
+npm run test                       # Run tests
+npm run build                      # Production build
+
+# Frontend
+npm run dev                        # Dev server
+npm run build                      # Production build
 ```
 
-The frontend will run on http://localhost:3000 and backend on http://localhost:3001 (or as configured).
+---
 
-## Development
-- Follow the requirements in the spec requirements folder
-- Implement features incrementally
-- Ensure proper error handling and validation
-- Add unit and integration tests
-- Use TypeScript for type safety
+## ✅ Setup Verification
 
-## Deployment
-- Frontend: Deploy to Vercel or Netlify
-- Backend: Deploy to Heroku, AWS, or similar
-- Database: Use managed PostgreSQL service
+After setup, verify:
+- [ ] `docker-compose ps` shows all running
+- [ ] Frontend loads at http://localhost:3000
+- [ ] Backend responds: `curl http://localhost:3001/api/health`
+- [ ] Can register & login
+- [ ] User can reserve (only 1 per concert)
+- [ ] Admin can create/delete concerts
+- [ ] Bookings appear in history
+
+---
+
+## 📝 Assignment Requirements
+
+| Requirement | Status | Details |
+|-----------|--------|---------|
+| Full-stack app | ✅ | Next.js + NestJS |
+| PostgreSQL + Docker | ✅ | TypeORM + docker-compose |
+| User authentication | ✅ | JWT with roles (Admin/User) |
+| Concert CRUD | ✅ | Admin create/delete, list |
+| Ticket booking | ✅ | Reserve/cancel with history |
+| 1-seat constraint | ✅ | Enforced in BookingsService |
+
+
+---
+
+**Ready to develop! 🚀**
