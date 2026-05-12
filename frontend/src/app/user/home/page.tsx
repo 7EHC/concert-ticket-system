@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import ConcertItem, { ConcertData } from '../../../components/ConcertItem';
-import { concertApi, bookingApi } from '../../../lib/api';
+import { concertApi, reservationApi } from '../../../lib/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 interface Concert extends ConcertData {
   reserved: boolean;
-  bookingId?: string;
+  reservationId?: string;
 }
 
 export default function UserHomePage() {
@@ -19,17 +19,17 @@ export default function UserHomePage() {
   const fetchData = async () => {
     if (!user) return;
     try {
-      const [allConcerts, myBookings] = await Promise.all([
+      const [allConcerts, myReservations] = await Promise.all([
         concertApi.getAll(),
-        bookingApi.getUserBookings(user.id),
+        reservationApi.getUserReservations(user.id),
       ]);
 
       const mapped = allConcerts.map((c: any) => {
-        const booking = myBookings.find((b: any) => b.concertId === c.id && b.status === 'reserved');
+        const reservation = myReservations.find((r: any) => r.concertId === c.id && r.status === 'reserved');
         return {
           ...c,
-          reserved: !!booking,
-          bookingId: booking?.id,
+          reserved: !!reservation,
+          reservationId: reservation?.id,
         };
       });
       setConcerts(mapped);
@@ -48,11 +48,11 @@ export default function UserHomePage() {
   const toggleReservation = async (concert: Concert) => {
     if (!user) return;
     const promise = async () => {
-      if (concert.reserved && concert.bookingId) {
-        await bookingApi.cancel(concert.bookingId, user.id);
+      if (concert.reserved && concert.reservationId) {
+        await reservationApi.cancel(concert.reservationId, user.id);
         return 'Reservation cancelled';
       } else {
-        await bookingApi.create({ userId: user.id, concertId: concert.id });
+        await reservationApi.create({ userId: user.id, concertId: concert.id });
         return 'Seat reserved successfully!';
       }
     };
@@ -63,7 +63,10 @@ export default function UserHomePage() {
         fetchData();
         return msg;
       },
-      error: (err) => err.message || 'Operation failed',
+      error: (err: any) => {
+        const message = err?.message || 'Operation failed';
+        return message.includes('HTTP error') ? 'Reservation failed' : message;
+      },
     });
   };
 

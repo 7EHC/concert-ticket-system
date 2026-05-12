@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '../../../lib/api';
 import toast from 'react-hot-toast';
 
-interface BookingHistoryItem {
+interface ReservationHistoryItem {
   id: string;
   status: 'reserved' | 'cancelled';
   createdAt: string;
@@ -17,13 +17,13 @@ interface BookingHistoryItem {
 }
 
 export default function AdminHistoryPage() {
-  const [history, setHistory] = useState<BookingHistoryItem[]>([]);
+  const [history, setHistory] = useState<ReservationHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const data = await api.get('/bookings/history');
+        const data = await api.get('/reservations/history');
         setHistory(data);
       } catch (error) {
         console.error('Failed to fetch history:', error);
@@ -75,7 +75,7 @@ export default function AdminHistoryPage() {
           {history.length === 0 && (
             <tr>
               <td colSpan={4} style={{ padding: 40, textAlign: 'center', color: '#999' }}>
-                No booking history found.
+                No reservation history found.
               </td>
             </tr>
           )}

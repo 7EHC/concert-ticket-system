@@ -18,8 +18,8 @@ export class ConcertsService {
   async findAll(): Promise<any[]> {
     return await this.concertRepository
       .createQueryBuilder('concert')
-      .loadRelationCountAndMap('concert.reservedSeats', 'concert.bookings', 'booking', (qb) =>
-        qb.where('booking.status = :status', { status: 'reserved' }),
+      .loadRelationCountAndMap('concert.reservedSeats', 'concert.reservations', 'reservation', (qb) =>
+        qb.where('reservation.status = :status', { status: 'reserved' }),
       )
       .orderBy('concert.createdAt', 'DESC')
       .getMany();

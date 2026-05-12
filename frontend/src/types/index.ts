@@ -19,7 +19,7 @@ export interface TicketType {
   available: number;
 }
 
-export interface Booking {
+export interface Reservation {
   id: string;
   concertId: string;
   userId: string;
