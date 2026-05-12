@@ -51,7 +51,7 @@ export default function AdminHistoryPage() {
   if (loading) return <div style={{ padding: 40 }}>Loading history...</div>;
 
   return (
-    <div style={{ backgroundColor: '#fff', borderRadius: 8, overflow: 'hidden', border: '1px solid #e0e0e0' }}>
+    <div style={{ backgroundColor: '#fff', borderRadius: 8, overflow: 'auto', border: '1px solid #e0e0e0' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
         <thead>
           <tr style={{ backgroundColor: '#fcfcfc', borderBottom: '1px solid #e0e0e0' }}>
