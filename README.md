@@ -77,22 +77,6 @@ Reservations:   GET /api/reservations | POST (reserve) | PUT /:id/cancel
 
 ---
 
-## 📋 Business Rules
-
-✅ **1-Seat-Per-User Constraint:** Each user reserves exactly 1 seat per concert
-```typescript
-// ReservationsService enforces:
-const existing = await reservationRepository.findOne({
-  where: { userId, concertId, status: 'RESERVED' }
-});
-if (existing) throw Error('Already reserved');
-```
-
-✅ **Seat Availability:** No reservations when sold out
-✅ **Admin Only:** Create/delete concerts (JWT + RolesGuard)
-
----
-
 ## 🏗️ Architecture
 
 ```
@@ -215,5 +199,3 @@ After setup, verify:
 
 
 ---
-
-**Ready to develop! 🚀**
