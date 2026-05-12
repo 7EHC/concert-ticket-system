@@ -19,7 +19,8 @@ export const api = {
       headers: getHeaders(),
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = await parseError(response);
+      throw error;
     }
     return response.json();
   },
@@ -31,7 +32,8 @@ export const api = {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = await parseError(response);
+      throw error;
     }
     return response.json();
   },
@@ -43,7 +45,8 @@ export const api = {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = await parseError(response);
+      throw error;
     }
     return response.json();
   },
@@ -54,12 +57,26 @@ export const api = {
       headers: getHeaders(),
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = await parseError(response);
+      throw error;
     }
     if (response.status === 204) return null;
     return response.json();
   },
 };
+
+async function parseError(response: Response): Promise<Error> {
+  let message = `HTTP error! status: ${response.status}`;
+  try {
+    const payload = await response.json();
+    if (payload && (payload.message || payload.error)) {
+      message = Array.isArray(payload.message) ? payload.message.join(', ') : payload.message || payload.error;
+    }
+  } catch {
+    // ignore JSON parse errors
+  }
+  return new Error(message);
+}
 
 // Concert API
 export const concertApi = {
@@ -76,10 +93,10 @@ export const authApi = {
 
 };
 
-// Booking API
-export const bookingApi = {
-  create: (bookingData: { userId: string; concertId: string }) => api.post('/bookings', bookingData),
-  getUserBookings: (userId: string) => api.get(`/bookings?userId=${userId}`),
-  cancel: (id: string, userId: string) => api.put(`/bookings/${id}/cancel`, { userId }),
-  getStats: () => api.get('/bookings/stats'),
+// Reservation API
+export const reservationApi = {
+  create: (data: { userId: string; concertId: string }) => api.post('/reservations', data),
+  getUserReservations: (userId: string) => api.get(`/reservations?userId=${userId}`),
+  cancel: (id: string, userId: string) => api.put(`/reservations/${id}/cancel`, { userId }),
+  getStats: () => api.get('/reservations/stats'),
 };

@@ -196,7 +196,7 @@ export default function SelectAccessLevel() {
             </div>
             <h2 className="card-title">User</h2>
             <p className="card-desc">
-              Browse upcoming events, reserve your favorite seats, and effortlessly manage your ticket bookings all in one place.
+              Browse upcoming events, reserve your favorite seats, and effortlessly manage your reservations all in one place.
             </p>
             <button className="action-btn user-btn" onClick={handleEnterUser}>
               Enter Workspace <span>→</span>

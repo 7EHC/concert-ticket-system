@@ -1,14 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn, UpdateDateColumn } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { Concert } from '../concerts/concert.entity';
 
-export enum ActionType {
-  RESERVE = 'reserve',
-  CANCEL = 'cancel',
+export enum ReservationStatus {
+  RESERVED = 'reserved',
+  CANCELLED = 'cancelled',
 }
 
-@Entity('booking_actions')
-export class BookingAction {
+@Entity('reservations')
+export class Reservation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,23 +18,24 @@ export class BookingAction {
   @Column({ name: 'concert_id' })
   concertId: string;
 
-  @Column({ name: 'booking_id' })
-  bookingId: string;
-
   @Column({
     type: 'enum',
-    enum: ActionType,
+    enum: ReservationStatus,
+    default: ReservationStatus.RESERVED,
   })
-  action: ActionType;
+  status: ReservationStatus;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Concert, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Concert, (concert) => concert.reservations, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'concert_id' })
   concert: Concert;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }

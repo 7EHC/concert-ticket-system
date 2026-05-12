@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ConcertItem, { ConcertData } from '../../../components/ConcertItem';
-import { concertApi, bookingApi } from '../../../lib/api';
+import { concertApi, reservationApi } from '../../../lib/api';
 import toast from 'react-hot-toast';
 
 interface Concert extends ConcertData {}
@@ -21,7 +21,7 @@ export default function AdminHomePage() {
     try {
       const [concertsData, statsData] = await Promise.all([
         concertApi.getAll(),
-        bookingApi.getStats()
+        reservationApi.getStats()
       ]);
       setConcerts(concertsData);
       setStats(statsData);
@@ -45,7 +45,7 @@ export default function AdminHomePage() {
       setDeleteTarget(null);
       toast.success('Deleted successfully!');
       // Refresh stats
-      const newStats = await bookingApi.getStats();
+      const newStats = await reservationApi.getStats();
       setStats(newStats);
     } catch (error) {
       console.error('Delete failed:', error);
@@ -67,7 +67,7 @@ export default function AdminHomePage() {
       setTab('overview');
       toast.success('Created successfully!');
       // Refresh stats
-      const newStats = await bookingApi.getStats();
+      const newStats = await reservationApi.getStats();
       setStats(newStats);
     } catch (error) {
       console.error('Create failed:', error);

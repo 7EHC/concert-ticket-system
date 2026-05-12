@@ -58,7 +58,7 @@ docker run -e POSTGRES_PASSWORD=password -e POSTGRES_DB=concert_ticket -p 5432:5
 
 ```
 concert-ticket-system/
-├── backend/              # NestJS API (src/auth, concerts, bookings, users)
+├── backend/              # NestJS API (src/auth, concerts, reservations, users)
 ├── frontend/             # Next.js app (app/auth, user, admin pages)
 ├── docker-compose.yml    # Docker services
 └── README.md            # This file
@@ -71,8 +71,8 @@ concert-ticket-system/
 ```
 Auth:       POST /api/auth/login | register
 Concerts:   GET /api/concerts | POST /api/concerts (admin) | DELETE /:id (admin)
-Bookings:   GET /api/bookings | POST (reserve) | PUT /:id/cancel
-            GET /api/bookings/stats (admin) | history (admin)
+Reservations:   GET /api/reservations | POST (reserve) | PUT /:id/cancel
+            GET /api/reservations/stats (admin) | history (admin)
 ```
 
 ---
@@ -81,14 +81,14 @@ Bookings:   GET /api/bookings | POST (reserve) | PUT /:id/cancel
 
 ✅ **1-Seat-Per-User Constraint:** Each user reserves exactly 1 seat per concert
 ```typescript
-// BookingsService enforces:
-const existing = await bookingRepository.findOne({
+// ReservationsService enforces:
+const existing = await reservationRepository.findOne({
   where: { userId, concertId, status: 'RESERVED' }
 });
-if (existing) throw Error('Already booked');
+if (existing) throw Error('Already reserved');
 ```
 
-✅ **Seat Availability:** No bookings when sold out
+✅ **Seat Availability:** No reservations when sold out
 ✅ **Admin Only:** Create/delete concerts (JWT + RolesGuard)
 
 ---
@@ -106,8 +106,8 @@ PostgreSQL (port 5432)
 **Data Models:**
 - `users` (id, email, password, role)
 - `concerts` (id, name, totalSeats, description)
-- `bookings` (id, userId, concertId, status, createdAt)
-- `booking_actions` (id, bookingId, action, timestamp)
+- `reservations` (reservation records: id, userId, concertId, status, createdAt)
+- `reservation_actions` (reservation action log: id, reservationId, action, timestamp)
 
 ---
 
@@ -134,7 +134,7 @@ cd backend && npm run test
 npm run test:e2e
 
 # Test 1-Seat Constraint
-npm run test -- --testNamePattern="not allow booking twice"
+npm run test -- --testNamePattern="not allow reservation twice"
 ```
 
 ---
@@ -198,7 +198,7 @@ After setup, verify:
 - [ ] Can register & login
 - [ ] User can reserve (only 1 per concert)
 - [ ] Admin can create/delete concerts
-- [ ] Bookings appear in history
+- [ ] Reservations appear in history
 
 ---
 
@@ -210,8 +210,8 @@ After setup, verify:
 | PostgreSQL + Docker | ✅ | TypeORM + docker-compose |
 | User authentication | ✅ | JWT with roles (Admin/User) |
 | Concert CRUD | ✅ | Admin create/delete, list |
-| Ticket booking | ✅ | Reserve/cancel with history |
-| 1-seat constraint | ✅ | Enforced in BookingsService |
+| Ticket reservation | ✅ | Reserve/cancel with history |
+| 1-seat constraint | ✅ | Enforced in ReservationsService |
 
 
 ---
